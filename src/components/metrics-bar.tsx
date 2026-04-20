@@ -61,7 +61,7 @@ export function MetricsBar({ retos }: { retos: Reto[] }) {
               fontSize: 12,
               boxShadow: "0 10px 40px -20px rgba(0,0,0,0.2)",
             }}
-            formatter={(value: number) => [fmtNum(value), "Eventos"]}
+            formatter={(value) => [fmtNum(Number(value)), "Eventos"]}
           />
           <Bar dataKey="events" radius={[0, 6, 6, 0]}>
             {data.map((d) => (

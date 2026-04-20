@@ -69,7 +69,7 @@ export function PointsTimeline({ retos }: { retos: Reto[] }) {
                 return String(v);
               }
             }}
-            formatter={(value: number, name) => [fmtNum(value), name === "points" ? "Puntos" : name]}
+            formatter={(value, name) => [fmtNum(Number(value)), name === "points" ? "Puntos" : String(name)]}
           />
           <Area
             type="monotone"
