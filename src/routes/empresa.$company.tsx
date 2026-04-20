@@ -68,7 +68,8 @@ function CompanyPage() {
   const drivers = useMemo(() => summarizeDrivers(retos), [retos]);
   const totalPoints = drivers.reduce((a, d) => a + d.totalPoints, 0);
   const completed = drivers.reduce((a, d) => a + d.completed, 0);
-  const total = drivers.reduce((a, d) => a + d.totalChallenges, 0);
+  const failed = drivers.reduce((a, d) => a + d.failed, 0);
+  const decided = completed + failed;
   const totalKm = drivers.reduce((a, d) => a + d.totalDistance, 0);
 
   return (
