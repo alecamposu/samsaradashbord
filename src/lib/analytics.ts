@@ -18,6 +18,13 @@ export const colorFor = (metric: string) =>
 
 export type Period = "all" | "weekly" | "monthly";
 
+export function isWeekly(type: string) {
+  return type === "Semanal" || /^Semana\s*\d+/i.test(type);
+}
+export function isMonthly(type: string) {
+  return type === "Mensual";
+}
+
 export function filterRetos(
   retos: Reto[],
   opts: {
@@ -31,8 +38,8 @@ export function filterRetos(
   return retos.filter((r) => {
     if (opts.company && r.company !== opts.company) return false;
     if (opts.driver && r.driver !== opts.driver) return false;
-    if (opts.type === "weekly" && r.type !== "Semanal") return false;
-    if (opts.type === "monthly" && r.type !== "Mensual") return false;
+    if (opts.type === "weekly" && !isWeekly(r.type)) return false;
+    if (opts.type === "monthly" && !isMonthly(r.type)) return false;
     if (opts.from && (!r.endDate || r.endDate < opts.from)) return false;
     if (opts.to && (!r.endDate || r.endDate > opts.to)) return false;
     return true;
@@ -66,22 +73,21 @@ export function summarizeDrivers(retos: Reto[]): DriverSummary[] {
   for (const [driver, rows] of byDriver) {
     const completed = rows.filter((r) => r.status === "Completado");
     const failed = rows.filter((r) => r.status === "Fallido");
+    const decided = completed.length + failed.length;
     const totalPoints = completed.reduce((a, r) => a + r.reward, 0);
     const potentialPoints = rows.reduce((a, r) => a + r.reward, 0);
     const weeklyPoints = completed
-      .filter((r) => r.type === "Semanal")
+      .filter((r) => isWeekly(r.type))
       .reduce((a, r) => a + r.reward, 0);
     const monthlyPoints = completed
-      .filter((r) => r.type === "Mensual")
+      .filter((r) => isMonthly(r.type))
       .reduce((a, r) => a + r.reward, 0);
-    // Distance: average per challenge window (avoid double counting)
     const distMap = new Map<string, number>();
     for (const r of rows) {
       const k = `${r.startDate}|${r.endDate}|${r.type}`;
       if (!distMap.has(k)) distMap.set(k, r.distanceKm);
     }
     const totalDistance = [...distMap.values()].reduce((a, b) => a + b, 0);
-    // Worst metric = highest sum of count
     const metricAgg = new Map<string, number>();
     for (const r of rows) {
       if (r.metric === "Sin eventos de seguridad") continue;
@@ -103,7 +109,7 @@ export function summarizeDrivers(retos: Reto[]): DriverSummary[] {
       completed: completed.length,
       failed: failed.length,
       totalChallenges: rows.length,
-      successRate: rows.length ? completed.length / rows.length : 0,
+      successRate: decided ? completed.length / decided : 0,
       weeklyPoints,
       monthlyPoints,
       totalDistance,

@@ -89,8 +89,9 @@ export function GlobalSummary() {
   const data = useDataset((s) => s.data);
   const drivers = summarizeDrivers(data.retos);
   const totalPoints = drivers.reduce((a, d) => a + d.totalPoints, 0);
-  const totalChallenges = drivers.reduce((a, d) => a + d.totalChallenges, 0);
   const completed = drivers.reduce((a, d) => a + d.completed, 0);
+  const failed = drivers.reduce((a, d) => a + d.failed, 0);
+  const decided = completed + failed;
   const totalKm = drivers.reduce((a, d) => a + d.totalDistance, 0);
 
   return (
@@ -99,11 +100,11 @@ export function GlobalSummary() {
       <StatCard
         label="Puntos otorgados"
         value={fmtNum(totalPoints)}
-        hint={`${fmtNum(completed)} de ${fmtNum(totalChallenges)} retos`}
+        hint={`${fmtNum(completed)} retos completados`}
       />
       <StatCard
         label="Tasa de éxito"
-        value={`${totalChallenges ? Math.round((completed / totalChallenges) * 100) : 0}%`}
+        value={`${decided ? Math.round((completed / decided) * 100) : 0}%`}
       />
       <StatCard
         label="Kilometraje total"
