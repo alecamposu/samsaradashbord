@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { uniqueCompanies } from "@/lib/analytics";
 import { useDataset } from "@/lib/data-store";
 import { useMemo } from "react";
+import airbagLogo from "@/assets/airbag-logo.png";
 
 export function SiteHeader() {
   const data = useDataset((s) => s.data);
@@ -11,15 +12,17 @@ export function SiteHeader() {
     <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-6 py-4">
         <Link to="/" className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <span className="font-display text-lg font-semibold">A</span>
-          </div>
-          <div className="leading-tight">
-            <div className="font-display text-lg font-semibold tracking-tight">
-              Apex Driver Insights
+          <img
+            src={airbagLogo}
+            alt="airbag technologies"
+            className="h-8 w-auto"
+          />
+          <div className="hidden border-l border-border/70 pl-3 leading-tight sm:block">
+            <div className="font-display text-sm font-semibold tracking-tight">
+              Driver Insights
             </div>
-            <div className="text-xs text-muted-foreground">
-              Programa de incentivos · seguridad vial
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
+              #CreatingBetterDrivers
             </div>
           </div>
         </Link>
