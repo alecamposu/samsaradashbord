@@ -15,6 +15,7 @@ import { MetricsBar } from "@/components/metrics-bar";
 import { PointsTimeline } from "@/components/points-timeline";
 import { DriverTable } from "@/components/driver-table";
 import { PeriodFilter, DateRangeFilter } from "@/components/filters";
+import { TemplateParams } from "@/components/template-params";
 
 export const Route = createFileRoute("/empresa/$company")({
   head: ({ params }) => ({
@@ -66,6 +67,7 @@ function CompanyPage() {
   );
 
   const drivers = useMemo(() => summarizeDrivers(retos), [retos]);
+  const template = data.templates[company] ?? [];
   const totalPoints = drivers.reduce((a, d) => a + d.totalPoints, 0);
   const completed = drivers.reduce((a, d) => a + d.completed, 0);
   const failed = drivers.reduce((a, d) => a + d.failed, 0);
@@ -152,6 +154,12 @@ function CompanyPage() {
             <MetricsBar retos={retos} />
           </div>
         </section>
+
+        {template.length > 0 && (
+          <section className="mb-10">
+            <TemplateParams rows={template} />
+          </section>
+        )}
 
         <section>
           <div className="mb-4 flex items-baseline justify-between">
