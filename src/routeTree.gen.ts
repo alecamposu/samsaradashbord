@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EmpresaCompanyRouteImport } from './routes/empresa.$company'
+import { Route as EmpresaCompanyConductorDriverRouteImport } from './routes/empresa.$company.conductor.$driver'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,44 @@ const EmpresaCompanyRoute = EmpresaCompanyRouteImport.update({
   path: '/empresa/$company',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmpresaCompanyConductorDriverRoute =
+  EmpresaCompanyConductorDriverRouteImport.update({
+    id: '/conductor/$driver',
+    path: '/conductor/$driver',
+    getParentRoute: () => EmpresaCompanyRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/empresa/$company': typeof EmpresaCompanyRoute
+  '/empresa/$company': typeof EmpresaCompanyRouteWithChildren
+  '/empresa/$company/conductor/$driver': typeof EmpresaCompanyConductorDriverRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/empresa/$company': typeof EmpresaCompanyRoute
+  '/empresa/$company': typeof EmpresaCompanyRouteWithChildren
+  '/empresa/$company/conductor/$driver': typeof EmpresaCompanyConductorDriverRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/empresa/$company': typeof EmpresaCompanyRoute
+  '/empresa/$company': typeof EmpresaCompanyRouteWithChildren
+  '/empresa/$company/conductor/$driver': typeof EmpresaCompanyConductorDriverRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/empresa/$company'
+  fullPaths: '/' | '/empresa/$company' | '/empresa/$company/conductor/$driver'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/empresa/$company'
-  id: '__root__' | '/' | '/empresa/$company'
+  to: '/' | '/empresa/$company' | '/empresa/$company/conductor/$driver'
+  id:
+    | '__root__'
+    | '/'
+    | '/empresa/$company'
+    | '/empresa/$company/conductor/$driver'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  EmpresaCompanyRoute: typeof EmpresaCompanyRoute
+  EmpresaCompanyRoute: typeof EmpresaCompanyRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +79,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmpresaCompanyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/empresa/$company/conductor/$driver': {
+      id: '/empresa/$company/conductor/$driver'
+      path: '/conductor/$driver'
+      fullPath: '/empresa/$company/conductor/$driver'
+      preLoaderRoute: typeof EmpresaCompanyConductorDriverRouteImport
+      parentRoute: typeof EmpresaCompanyRoute
+    }
   }
 }
 
+interface EmpresaCompanyRouteChildren {
+  EmpresaCompanyConductorDriverRoute: typeof EmpresaCompanyConductorDriverRoute
+}
+
+const EmpresaCompanyRouteChildren: EmpresaCompanyRouteChildren = {
+  EmpresaCompanyConductorDriverRoute: EmpresaCompanyConductorDriverRoute,
+}
+
+const EmpresaCompanyRouteWithChildren = EmpresaCompanyRoute._addFileChildren(
+  EmpresaCompanyRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  EmpresaCompanyRoute: EmpresaCompanyRoute,
+  EmpresaCompanyRoute: EmpresaCompanyRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
