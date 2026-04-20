@@ -18,6 +18,13 @@ export const colorFor = (metric: string) =>
 
 export type Period = "all" | "weekly" | "monthly";
 
+export function isWeekly(type: string) {
+  return type === "Semanal" || /^Semana\s*\d+/i.test(type);
+}
+export function isMonthly(type: string) {
+  return type === "Mensual";
+}
+
 export function filterRetos(
   retos: Reto[],
   opts: {
@@ -31,8 +38,8 @@ export function filterRetos(
   return retos.filter((r) => {
     if (opts.company && r.company !== opts.company) return false;
     if (opts.driver && r.driver !== opts.driver) return false;
-    if (opts.type === "weekly" && r.type !== "Semanal") return false;
-    if (opts.type === "monthly" && r.type !== "Mensual") return false;
+    if (opts.type === "weekly" && !isWeekly(r.type)) return false;
+    if (opts.type === "monthly" && !isMonthly(r.type)) return false;
     if (opts.from && (!r.endDate || r.endDate < opts.from)) return false;
     if (opts.to && (!r.endDate || r.endDate > opts.to)) return false;
     return true;
