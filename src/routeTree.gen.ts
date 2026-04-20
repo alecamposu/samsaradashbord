@@ -9,38 +9,88 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as CargarRouteImport } from './routes/cargar'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EmpresaCompanyRouteImport } from './routes/empresa.$company'
+import { Route as EmpresaCompanyConductorDriverRouteImport } from './routes/empresa.$company.conductor.$driver'
 
+const CargarRoute = CargarRouteImport.update({
+  id: '/cargar',
+  path: '/cargar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmpresaCompanyRoute = EmpresaCompanyRouteImport.update({
+  id: '/empresa/$company',
+  path: '/empresa/$company',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmpresaCompanyConductorDriverRoute =
+  EmpresaCompanyConductorDriverRouteImport.update({
+    id: '/conductor/$driver',
+    path: '/conductor/$driver',
+    getParentRoute: () => EmpresaCompanyRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cargar': typeof CargarRoute
+  '/empresa/$company': typeof EmpresaCompanyRouteWithChildren
+  '/empresa/$company/conductor/$driver': typeof EmpresaCompanyConductorDriverRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cargar': typeof CargarRoute
+  '/empresa/$company': typeof EmpresaCompanyRouteWithChildren
+  '/empresa/$company/conductor/$driver': typeof EmpresaCompanyConductorDriverRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cargar': typeof CargarRoute
+  '/empresa/$company': typeof EmpresaCompanyRouteWithChildren
+  '/empresa/$company/conductor/$driver': typeof EmpresaCompanyConductorDriverRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/cargar'
+    | '/empresa/$company'
+    | '/empresa/$company/conductor/$driver'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/cargar'
+    | '/empresa/$company'
+    | '/empresa/$company/conductor/$driver'
+  id:
+    | '__root__'
+    | '/'
+    | '/cargar'
+    | '/empresa/$company'
+    | '/empresa/$company/conductor/$driver'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CargarRoute: typeof CargarRoute
+  EmpresaCompanyRoute: typeof EmpresaCompanyRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/cargar': {
+      id: '/cargar'
+      path: '/cargar'
+      fullPath: '/cargar'
+      preLoaderRoute: typeof CargarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +98,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/empresa/$company': {
+      id: '/empresa/$company'
+      path: '/empresa/$company'
+      fullPath: '/empresa/$company'
+      preLoaderRoute: typeof EmpresaCompanyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/empresa/$company/conductor/$driver': {
+      id: '/empresa/$company/conductor/$driver'
+      path: '/conductor/$driver'
+      fullPath: '/empresa/$company/conductor/$driver'
+      preLoaderRoute: typeof EmpresaCompanyConductorDriverRouteImport
+      parentRoute: typeof EmpresaCompanyRoute
+    }
   }
 }
 
+interface EmpresaCompanyRouteChildren {
+  EmpresaCompanyConductorDriverRoute: typeof EmpresaCompanyConductorDriverRoute
+}
+
+const EmpresaCompanyRouteChildren: EmpresaCompanyRouteChildren = {
+  EmpresaCompanyConductorDriverRoute: EmpresaCompanyConductorDriverRoute,
+}
+
+const EmpresaCompanyRouteWithChildren = EmpresaCompanyRoute._addFileChildren(
+  EmpresaCompanyRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CargarRoute: CargarRoute,
+  EmpresaCompanyRoute: EmpresaCompanyRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
