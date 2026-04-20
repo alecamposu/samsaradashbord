@@ -116,11 +116,11 @@ function CompanyPage() {
           <StatCard
             label="Retos completados"
             value={fmtNum(completed)}
-            hint={`de ${fmtNum(total)} totales`}
+            hint={`${fmtNum(failed)} fallidos`}
           />
           <StatCard
             label="Tasa de éxito"
-            value={`${total ? Math.round((completed / total) * 100) : 0}%`}
+            value={`${decided ? Math.round((completed / decided) * 100) : 0}%`}
           />
           <StatCard
             label="Distancia recorrida"
