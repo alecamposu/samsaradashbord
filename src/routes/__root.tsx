@@ -34,13 +34,9 @@ export const Route = createRootRoute({
       { name: "author", content: "airbag technologies" },
       { name: "theme-color", content: "#FFE600" },
       { property: "og:title", content: "airbag · Driver Insights" },
-      { property: "og:description", content: "Dashboard de incentivos y hábitos por conductor — #CreatingBetterDrivers." },
+      { property: "og:description", content: "Programa de incentivos por flota con analítica de hábitos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "airbag · Driver Insights" },
-      { name: "twitter:description", content: "Dashboard de incentivos y hábitos por conductor — #CreatingBetterDrivers." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/TGrq9IggmXUuyNtRc9NLqhwCV0b2/social-images/social-1776712712868-1.IlustracionesTodas-17.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/TGrq9IggmXUuyNtRc9NLqhwCV0b2/social-images/social-1776712712868-1.IlustracionesTodas-17.webp" },
     ],
     links: [
       {
